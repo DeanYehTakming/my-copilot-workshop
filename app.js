@@ -14,13 +14,21 @@ const themeIcon = themeToggle.querySelector('.theme-icon');
 const themeLabel = themeToggle.querySelector('.theme-label');
 const filterButtons = document.querySelectorAll('.filter-btn');
 const THEME_STORAGE_KEY = 'todo-theme';
+const FILTER_STORAGE_KEY = 'todo-filter';
+const validFilters = ['all', 'active', 'completed'];
 const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 let todos = loadTodos();
-let currentFilter = 'all';
+let currentFilter = loadFilter();
 
 // 取得目前主題；沒有手動選擇時交給作業系統設定決定
 function getCurrentTheme() {
   return localStorage.getItem(THEME_STORAGE_KEY) || (systemThemeQuery.matches ? 'dark' : 'light');
+}
+
+// 讀取儲存的篩選條件，無效值則安全回退到全部
+function loadFilter() {
+  const savedFilter = localStorage.getItem(FILTER_STORAGE_KEY);
+  return validFilters.includes(savedFilter) ? savedFilter : 'all';
 }
 
 // 套用主題並同步切換按鈕的文字與圖示
@@ -99,10 +107,11 @@ function renderTodos() {
 
 // 更新篩選按鈕的選取狀態
 function setFilter(filter) {
-  currentFilter = filter;
+  currentFilter = validFilters.includes(filter) ? filter : 'all';
+  localStorage.setItem(FILTER_STORAGE_KEY, currentFilter);
   filterButtons.forEach((button) => {
-    button.classList.toggle('active', button.dataset.filter === filter);
-    button.setAttribute('aria-pressed', button.dataset.filter === filter);
+    button.classList.toggle('active', button.dataset.filter === currentFilter);
+    button.setAttribute('aria-pressed', button.dataset.filter === currentFilter);
   });
   renderTodos();
 }
