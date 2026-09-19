@@ -74,10 +74,10 @@ function renderTodos() {
     emptyState.textContent = todos.length === 0
       ? '還沒有任何待辦事項,新增一個吧!'
       : currentFilter === 'active'
-        ? '目前沒有未完成的待辦事項。'
+        ? '目前沒有未完成的待辦事項，其他項目仍可在「全部」查看。'
         : currentFilter === 'completed'
-          ? '目前沒有已完成的待辦事項。'
-          : '目前沒有符合條件的待辦事項。';
+          ? '目前沒有已完成的待辦事項，其他項目仍可在「全部」查看。'
+          : '目前沒有符合條件的待辦事項，其他項目仍可在「全部」查看。';
   } else {
     emptyState.hidden = true;
     todoList.innerHTML = filteredTodos
