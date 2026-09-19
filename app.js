@@ -9,7 +9,29 @@ const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
 const emptyState = document.getElementById('empty-state');
 const todoCount = document.getElementById('todo-count');
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = themeToggle.querySelector('.theme-icon');
+const themeLabel = themeToggle.querySelector('.theme-label');
+const filterButtons = document.querySelectorAll('.filter-btn');
+const THEME_STORAGE_KEY = 'todo-theme';
+const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
 let todos = loadTodos();
+let currentFilter = 'all';
+
+// 取得目前主題；沒有手動選擇時交給作業系統設定決定
+function getCurrentTheme() {
+  return localStorage.getItem(THEME_STORAGE_KEY) || (systemThemeQuery.matches ? 'dark' : 'light');
+}
+
+// 套用主題並同步切換按鈕的文字與圖示
+function applyTheme() {
+  const theme = getCurrentTheme();
+  document.documentElement.dataset.theme = theme;
+  const isDark = theme === 'dark';
+  themeIcon.textContent = isDark ? '☀️' : '🌙';
+  themeLabel.textContent = isDark ? '淺色模式' : '深色模式';
+  themeToggle.setAttribute('aria-label', isDark ? '切換到淺色模式' : '切換到深色模式');
+}
 
 // 讀取儲存的待辦資料，若不存在則回傳空陣列
 function loadTodos() {
@@ -39,13 +61,26 @@ function getUnfinishedCount(todos) {
 
 // 重新渲染待辦清單
 function renderTodos() {
-  // 若沒有任何項目，顯示空狀態並清空列表
-  if (todos.length === 0) {
+  const filteredTodos = todos.filter((todo) => {
+    if (currentFilter === 'active') return !todo.completed;
+    if (currentFilter === 'completed') return todo.completed;
+    return true;
+  });
+
+  // 根據篩選結果顯示清單或對應的提示文字
+  if (filteredTodos.length === 0) {
     todoList.innerHTML = '';
     emptyState.hidden = false;
+    emptyState.textContent = todos.length === 0
+      ? '還沒有任何待辦事項,新增一個吧!'
+      : currentFilter === 'active'
+        ? '目前沒有未完成的待辦事項。'
+        : currentFilter === 'completed'
+          ? '目前沒有已完成的待辦事項。'
+          : '目前沒有符合條件的待辦事項。';
   } else {
     emptyState.hidden = true;
-    todoList.innerHTML = todos
+    todoList.innerHTML = filteredTodos
       .map(
         (todo) => `
           <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
@@ -60,6 +95,16 @@ function renderTodos() {
 
   // 更新底部計數
   todoCount.textContent = `未完成: ${getUnfinishedCount(todos)} 項`;
+}
+
+// 更新篩選按鈕的選取狀態
+function setFilter(filter) {
+  currentFilter = filter;
+  filterButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.filter === filter);
+    button.setAttribute('aria-pressed', button.dataset.filter === filter);
+  });
+  renderTodos();
 }
 
 // 將 HTML 特殊字元轉義，避免 XSS
@@ -114,7 +159,7 @@ function toggleTodo(id, completed) {
 
 // 事件：新增表單送出
 // 當輸入空白內容時不新增，避免建立無效待辦
- todoForm.addEventListener('submit', (event) => {
+todoForm.addEventListener('submit', (event) => {
   event.preventDefault();
   addTodo(todoInput.value);
   todoInput.value = '';
@@ -122,7 +167,7 @@ function toggleTodo(id, completed) {
 });
 
 // 事件：勾選框改變狀態
- todoList.addEventListener('change', (event) => {
+todoList.addEventListener('change', (event) => {
   const target = event.target;
 
   if (target.matches('input[type="checkbox"]')) {
@@ -133,7 +178,7 @@ function toggleTodo(id, completed) {
 });
 
 // 事件：刪除按鈕點擊
- todoList.addEventListener('click', (event) => {
+todoList.addEventListener('click', (event) => {
   const target = event.target;
 
   if (target.matches('.delete-btn')) {
@@ -143,5 +188,25 @@ function toggleTodo(id, completed) {
   }
 });
 
+// 事件：切換深色或淺色模式
+themeToggle.addEventListener('click', () => {
+  const nextTheme = getCurrentTheme() === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  applyTheme();
+});
+
+// 事件：切換待辦篩選條件
+filterButtons.forEach((button) => {
+  button.addEventListener('click', () => setFilter(button.dataset.filter));
+});
+
+// 尚未手動選擇主題時，作業系統設定變更就同步更新
+systemThemeQuery.addEventListener('change', () => {
+  if (!localStorage.getItem(THEME_STORAGE_KEY)) {
+    applyTheme();
+  }
+});
+
 // 首次載入時渲染目前資料
-renderTodos();
+applyTheme();
+setFilter(currentFilter);
