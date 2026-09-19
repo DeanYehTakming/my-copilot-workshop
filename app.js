@@ -9,6 +9,7 @@ const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
 const emptyState = document.getElementById('empty-state');
 const todoCount = document.getElementById('todo-count');
+const clearCompletedButton = document.getElementById('clear-completed');
 const themeToggle = document.getElementById('theme-toggle');
 const themeIcon = themeToggle.querySelector('.theme-icon');
 const themeLabel = themeToggle.querySelector('.theme-label');
@@ -95,6 +96,7 @@ function renderTodos() {
 
   // 更新底部計數
   todoCount.textContent = `未完成: ${getUnfinishedCount(todos)} 項`;
+  clearCompletedButton.disabled = !todos.some((todo) => todo.completed);
 }
 
 // 更新篩選按鈕的選取狀態
@@ -157,6 +159,22 @@ function toggleTodo(id, completed) {
   renderTodos();
 }
 
+// 清除所有已完成的待辦事項
+function clearCompletedTodos() {
+  if (!todos.some((todo) => todo.completed)) {
+    return;
+  }
+
+  const shouldClear = window.confirm('確定要清除所有已完成的待辦事項嗎？');
+  if (!shouldClear) {
+    return;
+  }
+
+  todos = todos.filter((todo) => !todo.completed);
+  saveTodos(todos);
+  renderTodos();
+}
+
 // 事件：新增表單送出
 // 當輸入空白內容時不新增，避免建立無效待辦
 todoForm.addEventListener('submit', (event) => {
@@ -199,6 +217,9 @@ themeToggle.addEventListener('click', () => {
 filterButtons.forEach((button) => {
   button.addEventListener('click', () => setFilter(button.dataset.filter));
 });
+
+// 事件：清除所有已完成的待辦事項
+clearCompletedButton.addEventListener('click', clearCompletedTodos);
 
 // 尚未手動選擇主題時，作業系統設定變更就同步更新
 systemThemeQuery.addEventListener('change', () => {
