@@ -1,0 +1,3 @@
+[submodule "my-copilot-workshop"]
+	path = my-copilot-workshop
+	url = https://github.com/DeanYehTakming/my-copilot-workshop.git
