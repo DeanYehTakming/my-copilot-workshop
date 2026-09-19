@@ -6,6 +6,8 @@
   --primary-color-dark: #3730a3;
   --text-color: #1f2937;
   --muted-color: #6b7280;
+  --primary-text-color: #ffffff;
+  --completed-text-color: #6b7280;
   --border-color: #e5e7eb;
   --shadow-color: rgba(15, 23, 42, 0.08);
   --input-color: #f9fafb;
@@ -17,6 +19,7 @@
   --danger-color: #ef4444;
   --success-color: #10b981;
   --empty-color: #9ca3af;
+  --focus-ring-color: #3730a3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,9 +28,12 @@
     --bg-gradient-end: #1f2937;
     --card-color: #1f2937;
     --primary-color: #818cf8;
-    --primary-color-dark: #6366f1;
+    --primary-color-dark: #a5b4fc;
     --text-color: #f3f4f6;
-    --muted-color: #9ca3af;
+    --muted-color: #d1d5db;
+    --primary-text-color: #111827;
+    --completed-text-color: #d1d5db;
+    --focus-ring-color: #c7d2fe;
     --border-color: #374151;
     --shadow-color: rgba(0, 0, 0, 0.3);
     --input-color: #111827;
@@ -38,7 +44,7 @@
     --danger-hover-bg-color: rgba(248, 113, 113, 0.22);
     --danger-color: #f87171;
     --success-color: #34d399;
-    --empty-color: #9ca3af;
+    --empty-color: #d1d5db;
   }
 }
 
@@ -52,9 +58,12 @@
   --bg-gradient-end: #1f2937;
   --card-color: #1f2937;
   --primary-color: #818cf8;
-  --primary-color-dark: #6366f1;
+  --primary-color-dark: #a5b4fc;
   --text-color: #f3f4f6;
-  --muted-color: #9ca3af;
+  --muted-color: #d1d5db;
+  --primary-text-color: #111827;
+  --completed-text-color: #d1d5db;
+  --focus-ring-color: #c7d2fe;
   --border-color: #374151;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --input-color: #111827;
@@ -65,7 +74,7 @@
   --danger-hover-bg-color: rgba(248, 113, 113, 0.22);
   --danger-color: #f87171;
   --success-color: #34d399;
-  --empty-color: #9ca3af;
+  --empty-color: #d1d5db;
 }
 
 * {
@@ -93,6 +102,12 @@ body {
 button,
 input {
   font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
 }
 
 .app-shell {
@@ -167,7 +182,6 @@ input {
 }
 
 .todo-form input:focus {
-  outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px var(--focus-shadow-color);
 }
@@ -176,7 +190,7 @@ input {
   border: none;
   border-radius: 12px;
   background: var(--primary-color);
-  color: #fff;
+  color: var(--primary-text-color);
   padding: 12px 18px;
   font-weight: 600;
   cursor: pointer;
@@ -206,7 +220,7 @@ input {
 .filter-btn.active {
   border-color: var(--primary-color);
   background: var(--primary-color);
-  color: #fff;
+  color: var(--primary-text-color);
 }
 
 .todo-list {
@@ -251,9 +265,7 @@ input {
 }
 
 .todo-item.completed .todo-text {
-  text-decoration: line-through;
-  color: var(--muted-color);
-  opacity: 0.7;
+  color: var(--completed-text-color);
 }
 
 .delete-btn {

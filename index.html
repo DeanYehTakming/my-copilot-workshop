@@ -29,17 +29,17 @@
         </form>
 
         <nav class="filter-nav" aria-label="待辦篩選">
-          <button class="filter-btn active" type="button" data-filter="all">全部</button>
-          <button class="filter-btn" type="button" data-filter="active">未完成</button>
-          <button class="filter-btn" type="button" data-filter="completed">已完成</button>
+          <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button class="filter-btn" type="button" data-filter="active" aria-pressed="false">未完成</button>
+          <button class="filter-btn" type="button" data-filter="completed" aria-pressed="false">已完成</button>
         </nav>
 
         <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
 
-        <p id="empty-state" class="empty-state" hidden></p>
+        <p id="empty-state" class="empty-state" role="status" aria-live="polite" hidden></p>
 
         <footer class="todo-footer">
-          <span id="todo-count">未完成: 0 項</span>
+          <span id="todo-count" role="status" aria-live="polite">未完成: 0 項</span>
           <button id="clear-completed" class="clear-completed-btn" type="button" aria-label="清除所有已完成的待辦事項">
             清除已完成
           </button>
