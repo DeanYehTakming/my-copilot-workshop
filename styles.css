@@ -284,12 +284,35 @@ input {
 }
 
 .todo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--border-color);
-  text-align: right;
   color: var(--muted-color);
   font-weight: 600;
+}
+
+.clear-completed-btn {
+  border: 1px solid var(--danger-color);
+  border-radius: 8px;
+  background: var(--danger-bg-color);
+  color: var(--danger-color);
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.clear-completed-btn:hover:not(:disabled) {
+  background: var(--danger-hover-bg-color);
+}
+
+.clear-completed-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 @media (max-width: 480px) {
@@ -325,5 +348,9 @@ input {
   .todo-item {
     gap: 10px;
     padding: 10px 10px;
+  }
+
+  .todo-footer {
+    align-items: flex-end;
   }
 }
